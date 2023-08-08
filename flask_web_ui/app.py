@@ -3,8 +3,24 @@ import numpy as np
 import boto3, json
 from PIL import Image
 
+
+# This block is needed so that the app can set env vars with AWS credentials
+# This is needed when deploying the app in pythonanywhere.com
+# Remember to `vim flask_web_ui/.env` in the bash console to save the AWS credentials in the .env file before running this app (in pythonanywhere.com)
+# The .env file should look like this:
+# AWS_ACCESS_KEY_ID = xxx
+# AWS_SECRET_ACCESS_KEY = yyy
+# AWS_SESSION_TOKEN = zzz
+import os
+from dotenv import load_dotenv
+project_folder = os.path.expanduser('~/sagemaker-temp/flask_web_ui')
+load_dotenv(os.path.join(project_folder, '.env'))
+
+
 app = Flask(__name__)
-sagemaker_runtime_client = boto3.client('runtime.sagemaker')
+aws_region='us-east-1'
+session = boto3.Session()
+sagemaker_runtime_client = session.client('runtime.sagemaker', region_name=aws_region)
 endpoint_name = 'td-fm-ep-dev'
 
 
